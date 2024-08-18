@@ -1,3 +1,14 @@
+<script>
+import todos from './todos.js';
+
+export default {
+  data() {
+    return {
+      todos,
+    };
+  },
+};
+</script>
 <template>
   <div class="todoapp">
     <h1 class="todoapp__title">todos</h1>
@@ -7,8 +18,7 @@
         <button
           type="button"
           class="todoapp__toggle-all active"
-          data-cy="ToggleAllButton"
-        />
+          data-cy="ToggleAllButton"></button>
 
         <form>
           <input
@@ -20,55 +30,23 @@
         </form>
       </header>
 
-      <section class="todoapp__main" data-cy="TodoList">
-        <div data-cy="Todo" class="todo completed">
+      <section class="todoapp__main">
+        <div
+          class="todo completed"
+          v-for="(todo, index) of todos"
+          v-bind:key="todo.id"
+          :class="`todo ${todo.completed ? 'completed' : ''}`"
+        >
           <label class="todo__status-label">
             <input
-              data-cy="TodoStatus"
               type="checkbox"
               class="todo__status"
-              checked
+              :checked="todo.completed"
             />
           </label>
 
-          <span data-cy="TodoTitle" class="todo__title"> Completed Todo </span>
-
-          <button type="button" class="todo__remove" data-cy="TodoDelete">
-            ×
-          </button>
-
-          <div data-cy="TodoLoader" class="modal overlay">
-            <div class="modal-background has-background-white-ter" />
-            <div class="loader" />
-          </div>
-        </div>
-
-        <div data-cy="Todo" class="todo">
-          <label class="todo__status-label">
-            <input data-cy="TodoStatus" type="checkbox" class="todo__status" />
-          </label>
-
-          <span data-cy="TodoTitle" class="todo__title">
-            Not Completed Todo
-          </span>
-          <button type="button" class="todo__remove" data-cy="TodoDelete">
-            ×
-          </button>
-
-          <div data-cy="TodoLoader" class="modal overlay">
-            <div class="modal-background has-background-white-ter" />
-            <div class="loader" />
-          </div>
-        </div>
-
-        <div data-cy="Todo" class="todo">
-          <label class="todo__status-label">
-            <input data-cy="TodoStatus" type="checkbox" class="todo__status" />
-          </label>
-
-          <form>
+          <form v-if="false">
             <input
-              data-cy="TodoTitleField"
               type="text"
               class="todo__title-field"
               placeholder="Empty todo will be deleted"
@@ -76,28 +54,16 @@
             />
           </form>
 
-          <div data-cy="TodoLoader" class="modal overlay">
-            <div class="modal-background has-background-white-ter" />
-            <div class="loader" />
-          </div>
-        </div>
+          <template v-else>
+            <span class="todo__title">{{ todo.title }}</span>
+            <button class="todo__remove" v-on:click="todos.splise(index, 1)">
+              ×
+            </button>
+          </template>
 
-        <div data-cy="Todo" class="todo">
-          <label class="todo__status-label">
-            <input data-cy="TodoStatus" type="checkbox" class="todo__status" />
-          </label>
-
-          <span data-cy="TodoTitle" class="todo__title">
-            Todo is being saved now
-          </span>
-
-          <button type="button" class="todo__remove" data-cy="TodoDelete">
-            ×
-          </button>
-
-          <div data-cy="TodoLoader" class="modal overlay is-active">
-            <div class="modal-background has-background-white-ter" />
-            <div class="loader" />
+          <div class="modal overlay" :class="{ 'is-active': false }">
+            <div class="modal-background has-background-white-ter"></div>
+            <div class="loader"></div>
           </div>
         </div>
       </section>
@@ -137,16 +103,8 @@
       data-cy="ErrorNotification"
       class="notification is-danger is-light has-text-weight-normal"
     >
-      <button data-cy="HideErrorButton" type="button" class="delete" />
-
-      <br />
-      Title should not be empty
-      <br />
-      Unable to add a todo
-      <br />
-      Unable to delete a todo
-      <br />
-      Unable to update a todo
+      <button data-cy="HideErrorButton" type="button" class="delete"></button>
     </div>
   </div>
 </template>
+<style></style>
