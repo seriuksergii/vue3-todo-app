@@ -1,29 +1,41 @@
-# vue-todo-app
+Check out the live demo
 
-This template should help get you started developing with Vue 3 in Vite.
+[Demo](https://seriuksergii.github.io/react-todo/)
 
-## Recommended IDE Setup
+Installation
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+To run this project locally:
 
-## Customize configuration
+1.	Clone the Repository:
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+         https://github.com/seriuksergii/react-todo.git
 
-## Project Setup
+2.	Navigate to the project directory:
 
-```sh
-npm install
-```
+         cd react-todo
 
-### Compile and Hot-Reload for Development
+3.	Install dependencies:
 
-```sh
-npm run dev
-```
+          npm install
 
-### Compile and Minify for Production
+4.	Start the application:
+ 
+          npm start
 
-```sh
-npm run build
-```
+
+
+Technologies Used:
+
+•	React
+
+•	TypeScript
+
+•	SCSS
+
+
+
+
+
+
+
+
