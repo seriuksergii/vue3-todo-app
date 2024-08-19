@@ -29,6 +29,11 @@ export default {
         return;
       }
 
+      if (this.newTitle === '') {
+        this.remove();
+        return;
+      }
+
       this.$emit('update', {
         ...this.todo,
         title: this.newTitle,

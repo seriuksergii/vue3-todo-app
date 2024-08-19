@@ -13,7 +13,7 @@ export default {
 
     try {
       todos = JSON.parse(jsonData);
-    } catch (error) {}
+    } catch (e) {}
 
     return {
       todos,
@@ -21,7 +21,6 @@ export default {
       status: 'all',
     };
   },
-
   computed: {
     activeTodos() {
       return this.todos.filter((todo) => !todo.completed);
@@ -62,14 +61,6 @@ export default {
       });
 
       this.title = '';
-    },
-    async getTodos() {
-      try {
-        const response = await axios.get('URL_TO_YOUR_API');
-        this.todos = response.data;
-      } catch (error) {
-        console.error('Failed to fetch todos:', error);
-      }
     },
   },
 };
