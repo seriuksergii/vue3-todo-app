@@ -1,6 +1,6 @@
 Check out the live demo
 
-[Demo](https://seriuksergii.github.io/react-todo/)
+[Demo](https://seriuksergii.github.io/TaskTracker-Vue-/)
 
 Installation
 
@@ -8,11 +8,11 @@ To run this project locally:
 
 1.	Clone the Repository:
 
-         https://github.com/seriuksergii/react-todo.git
+         https://github.com/seriuksergii/TaskTracker-Vue-.git
 
 2.	Navigate to the project directory:
 
-         cd react-todo
+         cd TaskTracker-Vue-
 
 3.	Install dependencies:
 
@@ -26,7 +26,7 @@ To run this project locally:
 
 Technologies Used:
 
-•	React
+•	Vue
 
 •	TypeScript
 
