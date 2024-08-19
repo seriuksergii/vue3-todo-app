@@ -1,14 +1,80 @@
 <script>
-import todos from './todos.js';
+import FilterStatus from './components/FilterStatus.vue';
+import ItemTodo from './components/ItemTodo.vue';
 
 export default {
+  components: {
+    FilterStatus,
+    ItemTodo,
+  },
   data() {
+    let todos = [];
+    const jsonData = localStorage.getItem('todos') || '[]';
+
+    try {
+      todos = JSON.parse(jsonData);
+    } catch (error) {}
+
     return {
       todos,
+      title: '',
+      status: 'all',
     };
+  },
+
+  computed: {
+    activeTodos() {
+      return this.todos.filter((todo) => !todo.completed);
+    },
+    completedTodos() {
+      return this.todos.filter((todo) => todo.completed);
+    },
+    visibleTodos() {
+      switch (this.status) {
+        case 'active':
+          return this.activeTodos;
+        case 'completed':
+          return this.completedTodos;
+        default:
+          return this.todos;
+      }
+    },
+  },
+  watch: {
+    todos: {
+      handler() {
+        localStorage.setItem('todos', JSON.stringify(this.todos));
+      },
+      deep: true,
+    },
+  },
+
+  methods: {
+    handleSubmit() {
+      if (!this.title.trim()) {
+        return;
+      }
+
+      this.todos.push({
+        id: Date.now(),
+        title: this.title.trim(),
+        completed: false,
+      });
+
+      this.title = '';
+    },
+    async getTodos() {
+      try {
+        const response = await axios.get('URL_TO_YOUR_API');
+        this.todos = response.data;
+      } catch (error) {
+        console.error('Failed to fetch todos:', error);
+      }
+    },
   },
 };
 </script>
+
 <template>
   <div class="todoapp">
     <h1 class="todoapp__title">todos</h1>
@@ -16,95 +82,57 @@ export default {
     <div class="todoapp__content">
       <header class="todoapp__header">
         <button
-          type="button"
-          class="todoapp__toggle-all active"
-          data-cy="ToggleAllButton"></button>
+          class="todoapp__toggle-all"
+          :class="{ active: activeTodos.length === 0 }"
+        />
 
-        <form>
+        <form @submit.prevent="handleSubmit">
           <input
-            data-cy="NewTodoField"
             type="text"
             class="todoapp__new-todo"
             placeholder="What needs to be done?"
+            v-model="title"
           />
         </form>
       </header>
 
-      <section class="todoapp__main">
-        <div
-          class="todo completed"
-          v-for="(todo, index) of todos"
-          v-bind:key="todo.id"
-          :class="`todo ${todo.completed ? 'completed' : ''}`"
-        >
-          <label class="todo__status-label">
-            <input
-              type="checkbox"
-              class="todo__status"
-              :checked="todo.completed"
-            />
-          </label>
+      <TransitionGroup name="list" tag="section" class="todoapp__main">
+        <ItemTodo
+          v-for="todo of visibleTodos"
+          :key="todo.id"
+          :todo="todo"
+          @update="Object.assign(todo, $event)"
+          @delete="todos.splice(todos.indexOf(todo), 1)"
+        />
+      </TransitionGroup>
 
-          <form v-if="false">
-            <input
-              type="text"
-              class="todo__title-field"
-              placeholder="Empty todo will be deleted"
-              value="Todo is being edited now"
-            />
-          </form>
+      <footer class="todoapp__footer">
+        <span class="todo-count"> {{ activeTodos.length }} items left </span>
 
-          <template v-else>
-            <span class="todo__title">{{ todo.title }}</span>
-            <button class="todo__remove" v-on:click="todos.splise(index, 1)">
-              ×
-            </button>
-          </template>
-
-          <div class="modal overlay" :class="{ 'is-active': false }">
-            <div class="modal-background has-background-white-ter"></div>
-            <div class="loader"></div>
-          </div>
-        </div>
-      </section>
-
-      <footer class="todoapp__footer" data-cy="Footer">
-        <span class="todo-count" data-cy="TodosCounter"> 3 items left </span>
-
-        <nav class="filter" data-cy="Filter">
-          <a href="#/" class="filter__link selected" data-cy="FilterLinkAll">
-            All
-          </a>
-
-          <a href="#/active" class="filter__link" data-cy="FilterLinkActive">
-            Active
-          </a>
-
-          <a
-            href="#/completed"
-            class="filter__link"
-            data-cy="FilterLinkCompleted"
-          >
-            Completed
-          </a>
-        </nav>
+        <FilterStatus v-model="status" />
 
         <button
-          type="button"
           class="todoapp__clear-completed"
-          data-cy="ClearCompletedButton"
+          v-if="completedTodos.length > 0"
+          @click="todos = activeTodos"
         >
           Clear completed
         </button>
       </footer>
     </div>
-
-    <div
-      data-cy="ErrorNotification"
-      class="notification is-danger is-light has-text-weight-normal"
-    >
-      <button data-cy="HideErrorButton" type="button" class="delete"></button>
-    </div>
   </div>
 </template>
-<style></style>
+
+<style>
+.list-enter-active,
+.list-leave-active {
+  max-height: 60px;
+  transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  max-height: 0;
+  transform: scaleY(0);
+}
+</style>
